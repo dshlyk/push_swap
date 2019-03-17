@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:05:01 by sbruen            #+#    #+#             */
-/*   Updated: 2019/03/03 18:38:23 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/03/17 16:35:23 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,10 @@ void	apply_pa(t_stack *stack)
 {
 	if (!stack->size_b)
 		return ;
+	stack->stack_a[stack->size_a] = stack->stack_b[stack->size_b - 1];
 	stack->size_a++;
-	stack->stack_a[stack->size_a] = stack->stack_b[stack->size_b];
 	stack->size_b--;
+	printf("pa\n");
 }
 
 void	apply_pb(t_stack *stack)
@@ -68,6 +69,7 @@ void	apply_pb(t_stack *stack)
 	stack->stack_b[stack->size_b] = stack->stack_a[stack->size_a - 1];
 	stack->size_a--;
 	stack->size_b++;
+	printf("pb\n");
 }
 
 void	apply_ra(t_stack *stack)
@@ -83,6 +85,7 @@ void	apply_ra(t_stack *stack)
 		i--;
 	}
 	stack->stack_a[i] = tmp;
+	printf("ra\n");
 }
 
 void	apply_rb(t_stack *stack)
@@ -98,6 +101,7 @@ void	apply_rb(t_stack *stack)
 		i--;
 	}
 	stack->stack_b[i] = tmp;
+	printf("rb\n");
 }
 
 void	apply_rr(t_stack *stack)
@@ -216,42 +220,145 @@ void	split_input(int argc, char **argv, t_stack *stack)
 	fill_stack(str, stack->size_a - 1, stack);
 }
 
-void	print_stack(int *stack, int size)
+void	print_stack(t_stack *stack)
 {
+	int		size;
+	int		size_a;
+	int		size_b;
+
+	size = (stack->size_a > stack->size_b ? stack->size_a : stack->size_b);
+	size_a = stack->size_a - 1;
+	size_b = stack->size_b - 1;
 	while (size)
 	{
-		printf("%d\n", stack[size - 1]);
+		if (size_a > size_b)
+		{
+			printf("%3d\n", stack->stack_a[size_a]);
+			size_a--;
+		}
+		if (size_a < size_b)
+		{
+			printf("%9d\n", stack->stack_b[size_b]);
+			size_b--;
+		}
+		else
+		{
+			printf("%3d", stack->stack_a[size_a]);
+			printf("%6d\n", stack->stack_b[size_b]);
+			size_a--;
+			size_b--;
+		}
 		size--;
 	}
 }
 
 void	print_res(t_stack *stack)
 {
-	print_stack(stack->stack_a, stack->size_a);
-	printf("--\n");
-	printf("A\n\n");
-	print_stack(stack->stack_b, stack->size_b);
-	printf("--\n");
-	printf("B\n\n");
+	print_stack(stack);
+	printf("%3s %6s\n", "__", "__");
+	printf("%3s %6s\n", "A", "B");
+}
+
+int		biggest_num(int *stack, int size)
+{
+	int		i;
+	int		num;
+	int		pos;
+
+	i = 1;
+	pos = 0;
+	num = stack[0];
+	while (size > 0)
+	{
+		if (stack[i] > num)
+		{
+			num = stack[i];
+			pos = i;
+		}
+		i++;
+		size--;
+	}
+	return (pos);
+}
+
+int		sec_biggest_num(int *stack, int size, int big)
+{
+	int		i;
+	int		num;
+	int		pos;
+
+	i = 1;
+	pos = 0;
+	num = stack[0];
+	while (size > 0)
+	{
+		if (stack[i] > num && stack[i] != stack[big])
+		{
+			num = stack[i];
+			pos = i;
+		}
+		i++;
+		size--;
+	}
+	return (pos);
+}
+
+void	print_arr(int *arr, int size)
+{
+	int		i;
+
+	i = size - 1;
+	while (size--)
+	{
+		printf("%d\n", arr[i]);
+		i--;
+	}
+}
+
+void	pushing_to_b(t_stack *stack)
+{
+	int		pos;
+	int		pos2;
+	int		i;
+	int		tmp;
+
+	pos = biggest_num(stack->stack_a, stack->size_a - 1);
+	pos2 = sec_biggest_num(stack->stack_a, stack->size_a - 1, pos);
+	tmp = stack->size_a - 1;
+	while (tmp >= 0)
+	{
+		if (tmp == pos || tmp == pos2)
+			apply_ra(stack);
+		else
+			apply_pb(stack);
+		tmp--;
+	}
+	if (stack->stack_a[0] < stack->stack_a[1])
+		apply_ra(stack);
 }
 
 void	sort(t_stack *stack)
 {
-	int		i;
-	int		bot;
-
-	i = stack->size_a - 1;
-	bot = stack->stack_a[0];
-	while (i > 0)
-	{
-		if (bot > stack->stack_a[stack->size_a - 1])
+	int		top_a;
+	int		top_b;
+	int		s;
+	
+	pushing_to_b(stack);
+	s = stack->stack_a[0];
+	while (stack->size_b)
+	{	
+		top_a = stack->size_a - 1;	
+		top_b = stack->size_b - 1;
+		if (stack->stack_b[top_b] > stack->stack_a[top_a])
 			apply_ra(stack);
-		else
-			apply_pb(stack);
-		print_res(stack);
-		i--;
+		else if (stack->stack_b[top_b] < stack->stack_a[top_a] && stack->stack_b[top_b] < stack->stack_a[0] && stack->stack_a[0] != s)
+			apply_rra(stack);
+		else if ((stack->stack_b[top_b] < stack->stack_a[top_a] && stack->stack_b[top_b] > stack->stack_a[0]) || stack->stack_a[0] == s)
+			apply_pa(stack);
+		//print_res(stack);
 	}
-
+	while (stack->stack_a[0] != s)
+		apply_ra(stack);
 }
 
 int		main(int argc, char **argv)
@@ -268,5 +375,6 @@ int		main(int argc, char **argv)
 	else
 		fill_stack(argv + 1, stack->size_a - 1, stack);
 	sort(stack);
-	print_res(stack);
+	print_arr(stack->stack_a, stack->size_a);
+	//print_res(stack);
 }
