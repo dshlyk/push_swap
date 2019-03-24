@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:05:01 by sbruen            #+#    #+#             */
-/*   Updated: 2019/03/17 16:35:23 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/03/24 18:01:26 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	apply_sa(t_stack *stack)
 	tmp = stack->stack_a[stack->size_a - 1]; 
 	stack->stack_a[stack->size_a - 1] = stack->stack_a[stack->size_a - 2];
 	stack->stack_a[stack->size_a - 2] = tmp; 
+	printf("sa\n");
 }
 
 void	apply_sb(t_stack *stack)
@@ -44,6 +45,7 @@ void	apply_sb(t_stack *stack)
 	tmp = stack->stack_b[stack->size_b - 1]; 
 	stack->stack_b[stack->size_b - 1] = stack->stack_b[stack->size_b - 2];
 	stack->stack_b[stack->size_b - 2] = tmp; 
+	printf("sb\n");
 }
 
 void	apply_ss(t_stack *stack)
@@ -108,6 +110,7 @@ void	apply_rr(t_stack *stack)
 {
 	apply_ra(stack);
 	apply_rb(stack);
+	printf("rr\n");
 }
 
 void	apply_rra(t_stack *stack)
@@ -123,6 +126,7 @@ void	apply_rra(t_stack *stack)
 		i++;
 	}
 	stack->stack_a[i] = tmp;
+	printf("rra\n");
 }
 
 void	apply_rrb(t_stack *stack)
@@ -138,12 +142,14 @@ void	apply_rrb(t_stack *stack)
 		i++;
 	}
 	stack->stack_b[i] = tmp;
+	printf("rrb\n");
 }
 
 void	apply_rrr(t_stack *stack)
 {
 	apply_rra(stack);
 	apply_rrb(stack);
+	printf("rrr\n");
 }
 
 void	check_input(char **str)
@@ -263,44 +269,32 @@ int		biggest_num(int *stack, int size)
 {
 	int		i;
 	int		num;
-	int		pos;
 
 	i = 1;
-	pos = 0;
 	num = stack[0];
-	while (size > 0)
+	while (size-- > 1)
 	{
 		if (stack[i] > num)
-		{
 			num = stack[i];
-			pos = i;
-		}
 		i++;
-		size--;
 	}
-	return (pos);
+	return (num);
 }
 
-int		sec_biggest_num(int *stack, int size, int big)
+int		smallest_num(int *stack, int size)
 {
 	int		i;
 	int		num;
-	int		pos;
 
 	i = 1;
-	pos = 0;
 	num = stack[0];
-	while (size > 0)
+	while (size-- > 1)
 	{
-		if (stack[i] > num && stack[i] != stack[big])
-		{
+		if (stack[i] < num)
 			num = stack[i];
-			pos = i;
-		}
 		i++;
-		size--;
 	}
-	return (pos);
+	return (num);
 }
 
 void	print_arr(int *arr, int size)
@@ -315,60 +309,93 @@ void	print_arr(int *arr, int size)
 	}
 }
 
-void	pushing_to_b(t_stack *stack)
-{
-	int		pos;
-	int		pos2;
-	int		i;
-	int		tmp;
-
-	pos = biggest_num(stack->stack_a, stack->size_a - 1);
-	pos2 = sec_biggest_num(stack->stack_a, stack->size_a - 1, pos);
-	tmp = stack->size_a - 1;
-	while (tmp >= 0)
-	{
-		if (tmp == pos || tmp == pos2)
-			apply_ra(stack);
-		else
-			apply_pb(stack);
-		tmp--;
-	}
-	if (stack->stack_a[0] < stack->stack_a[1])
-		apply_ra(stack);
-}
-
 void	sort(t_stack *stack)
 {
-	int		top_a;
-	int		top_b;
-	int		s;
-	
-	pushing_to_b(stack);
-	s = stack->stack_a[0];
-	while (stack->size_b)
-	{	
-		top_a = stack->size_a - 1;	
-		top_b = stack->size_b - 1;
-		if (stack->stack_b[top_b] > stack->stack_a[top_a])
-			apply_ra(stack);
-		else if (stack->stack_b[top_b] < stack->stack_a[top_a] && stack->stack_b[top_b] < stack->stack_a[0] && stack->stack_a[0] != s)
-			apply_rra(stack);
-		else if ((stack->stack_b[top_b] < stack->stack_a[top_a] && stack->stack_b[top_b] > stack->stack_a[0]) || stack->stack_a[0] == s)
-			apply_pa(stack);
-		//print_res(stack);
+	int		middle;
+	int		tmp;
+	int		big;
+	int		small;
+	int		j;
+
+	big = biggest_num(stack->stack_a, stack->size_a);
+	small = smallest_num(stack->stack_a, stack->size_a);
+	middle = (small + big) / 2;
+	tmp = stack->size_a - 1;
+	j = 0;
+	if (stack->stack_a[stack->size_a - 1] < middle)
+	{
+		apply_pb(stack);
+		j++;
 	}
-	while (stack->stack_a[0] != s)
+	else
 		apply_ra(stack);
+	if (stack->stack_a[0] != big || stack->size_a > 2)
+	{
+		/*printf("A:\n");
+		print_arr(stack->stack_a, stack->size_a);
+		printf("------------------\n");
+		printf("B:\n");
+		print_arr(stack->stack_b, stack->size_b);
+		printf("------------------\n");*/
+		big = biggest_num(stack->stack_b, stack->size_b);
+		if (stack->size_b == 2 && stack->stack_b[stack->size_b - 1] < stack->stack_b[0])
+			apply_sb(stack);
+		if (stack->size_b == 3)
+		{
+			if (stack->stack_b[stack->size_b - 1] < stack->stack_b[stack->size_b - 2])
+				apply_sb(stack);
+			if (stack->stack_b[stack->size_b - 2] < stack->stack_b[0])
+			{
+				apply_rrb(stack);
+				apply_sb(stack);
+			}
+			if (stack->stack_b[stack->size_b - 1] < stack->stack_b[stack->size_b - 2])
+				apply_sb(stack);
+		}
+		if (stack->stack_b[stack->size_b - 1] < stack->stack_b[0] && stack->size_b > 3)
+			apply_rb(stack);
+		else if (stack->stack_b[stack->size_b - 1] < stack->stack_b[stack->size_b - 2] && stack->size_b > 3)
+		{
+			while (stack->stack_b[stack->size_b - 1] < stack->stack_b[stack->size_b - 2])
+			{
+				apply_sb(stack);
+				apply_rb(stack);
+			}
+		}
+		else if (stack->stack_b[stack->size_b - 1] > stack->stack_b[0] && stack->stack_b[stack->size_b - 1] != big && stack->size_b > 3)
+		{
+			while (stack->stack_b[stack->size_b - 1] > stack->stack_b[0] && stack->stack_b[stack->size_b - 1] != big)
+			{
+				apply_rrb(stack);
+				apply_sb(stack);
+			}
+		}
+		while (stack->stack_b[stack->size_b - 1] != big && stack->size_b > 3)
+			apply_rrb(stack);
+		sort(stack);
+	}
+	apply_pa(stack);
+	/*while (j--)
+	{
+		while (stack->stack_b[stack->size_b - 1] != big)
+		{
+			apply_rb(stack);
+			i++;
+		}
+		if (stack->stack_b[stack->size_b - 1] == big)
+			apply_pa(stack);
+		while (i--)
+			apply_rrb(stack);
+	}*/
 }
 
 int		main(int argc, char **argv)
 {
 	t_stack	*stack;
 	int		i;
-	char	**str;
 
-	i = 1;
 	stack = (t_stack*)malloc(sizeof(t_stack));
+	i = 0;
 	init_stack(stack, argc);
 	if (argc == 2)
 		split_input(argc, argv, stack);
@@ -376,5 +403,7 @@ int		main(int argc, char **argv)
 		fill_stack(argv + 1, stack->size_a - 1, stack);
 	sort(stack);
 	print_arr(stack->stack_a, stack->size_a);
-	//print_res(stack);
+	//printf("------------------\n");
+	//print_arr(stack->stack_b, stack->size_b);
+	//print_res(stack);*/
 }
