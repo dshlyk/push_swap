@@ -6,12 +6,14 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:05:01 by sbruen            #+#    #+#             */
-/*   Updated: 2019/03/24 18:01:26 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/04/10 19:39:20 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 #include "libft/libft.h"
+
+void	sort(t_stack *stack);
 
 void	init_stack(t_stack *stack, int argc)
 {
@@ -108,8 +110,25 @@ void	apply_rb(t_stack *stack)
 
 void	apply_rr(t_stack *stack)
 {
-	apply_ra(stack);
-	apply_rb(stack);
+	int		i;
+	int		tmp;
+
+	i = stack->size_a - 1;
+	tmp = stack->stack_a[stack->size_a - 1];
+	while (i > 0)
+	{
+		stack->stack_a[i] = stack->stack_a[i - 1];
+		i--;
+	}
+	stack->stack_a[i] = tmp;
+	i = stack->size_b - 1;
+	tmp = stack->stack_b[stack->size_b - 1];
+	while (i > 0)
+	{
+		stack->stack_b[i] = stack->stack_b[i - 1];
+		i--;
+	}
+	stack->stack_b[i] = tmp;
 	printf("rr\n");
 }
 
@@ -147,8 +166,25 @@ void	apply_rrb(t_stack *stack)
 
 void	apply_rrr(t_stack *stack)
 {
-	apply_rra(stack);
-	apply_rrb(stack);
+	int		i;
+	int		tmp;
+
+	i = 0;
+	tmp = stack->stack_a[i];
+	while (i < stack->size_a - 1)
+	{
+		stack->stack_a[i] = stack->stack_a[i + 1];
+		i++;
+	}
+	stack->stack_a[i] = tmp;
+	i = 0;
+	tmp = stack->stack_b[i];
+	while (i < stack->size_b - 1)
+	{
+		stack->stack_b[i] = stack->stack_b[i + 1];
+		i++;
+	}
+	stack->stack_b[i] = tmp;
 	printf("rrr\n");
 }
 
@@ -226,45 +262,6 @@ void	split_input(int argc, char **argv, t_stack *stack)
 	fill_stack(str, stack->size_a - 1, stack);
 }
 
-void	print_stack(t_stack *stack)
-{
-	int		size;
-	int		size_a;
-	int		size_b;
-
-	size = (stack->size_a > stack->size_b ? stack->size_a : stack->size_b);
-	size_a = stack->size_a - 1;
-	size_b = stack->size_b - 1;
-	while (size)
-	{
-		if (size_a > size_b)
-		{
-			printf("%3d\n", stack->stack_a[size_a]);
-			size_a--;
-		}
-		if (size_a < size_b)
-		{
-			printf("%9d\n", stack->stack_b[size_b]);
-			size_b--;
-		}
-		else
-		{
-			printf("%3d", stack->stack_a[size_a]);
-			printf("%6d\n", stack->stack_b[size_b]);
-			size_a--;
-			size_b--;
-		}
-		size--;
-	}
-}
-
-void	print_res(t_stack *stack)
-{
-	print_stack(stack);
-	printf("%3s %6s\n", "__", "__");
-	printf("%3s %6s\n", "A", "B");
-}
-
 int		biggest_num(int *stack, int size)
 {
 	int		i;
@@ -297,6 +294,28 @@ int		smallest_num(int *stack, int size)
 	return (num);
 }
 
+int		smallest_ind(int *stack, int size)
+{
+	int		i;
+	int		num;
+	int		tmp;
+
+	i = 1;
+	num = stack[0];
+	while (size-- > 1)
+	{
+		if (stack[i] < num)
+		{
+			num = stack[i];
+			tmp = i;
+		}
+		i++;
+	}
+	if (num == stack[0])
+		return (0);
+	return (tmp);
+}
+
 void	print_arr(int *arr, int size)
 {
 	int		i;
@@ -309,84 +328,413 @@ void	print_arr(int *arr, int size)
 	}
 }
 
-void	sort(t_stack *stack)
+int		check_ra(t_stack *stack)
+{
+	int		i;
+	int		tmp_a;
+	int		tmp_b;
+
+	i = 0;
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		return (0);
+	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		tmp_a--;
+		i++;
+	}
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] < stack->stack_b[tmp_b]) && tmp_a)
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] == biggest_num(stack->stack_a, stack->size_a))
+			return (i);
+		tmp_a--;
+		i++;
+	}
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]) && !tmp_b)
+		return (9999);
+	return (i);
+}
+
+int		check_rb(t_stack *stack)
+{
+	int		i;
+	int		tmp_a;
+	int		tmp_b;
+
+	i = 0;
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		return (0);
+	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		tmp_b--;
+		i++;
+	}
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]) && tmp_b)
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] == biggest_num(stack->stack_a, stack->size_a))
+			return (i);
+		tmp_b--;
+		i++;
+	}
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]) && !tmp_b)
+		return (9999);
+	return (i);
+}
+
+int		check_rr(t_stack *stack)
+{
+	int		i;
+	int		tmp_a;
+	int		tmp_b;
+
+	i = 0;
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		return (0);
+	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		tmp_a--;
+		tmp_b--;
+		i++;
+	}
+	while (tmp_a && tmp_b && !(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] < stack->stack_b[tmp_b])) 
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] == biggest_num(stack->stack_a, stack->size_a))
+			return (i);
+		tmp_a--;
+		tmp_b--;
+		i++;
+	}
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] < stack->stack_b[tmp_b]) && !tmp_b)
+		return (9999);
+	return (i);
+}
+
+int		check_rra(t_stack *stack)
+{
+	int		i;
+	int		tmp_a;
+	int		tmp_b;
+
+	i = 0;
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		return (0);
+	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		tmp_a = 0;
+		i++;
+	}
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] < stack->stack_b[tmp_b]) && tmp_a < stack->size_a)
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] == biggest_num(stack->stack_a, stack->size_a))
+			return (i);
+		tmp_a++;
+		i++;
+	}
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]) && tmp_b == stack->size_b)
+		return (9999);
+	return (i);
+}
+
+int		check_rrb(t_stack *stack)
+{
+	int		i;
+	int		tmp_a;
+	int		tmp_b;
+
+	i = 0;
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		return (0);
+	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		tmp_b = 0;
+		i++;
+	}
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]) && tmp_b < stack->size_b)
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] == biggest_num(stack->stack_a, stack->size_a))
+			return (i);
+		tmp_b++;
+		i++;
+	}
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]) && tmp_b == stack->size_b)
+		return (9999);
+	return (i);
+}
+
+int		check_rrr(t_stack *stack)
+{
+	int		i;
+	int		tmp_a;
+	int		tmp_b;
+
+	i = 0;
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;	
+	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		return (0);
+	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		tmp_a = 0;
+		tmp_b = 0;
+		i++;
+	}
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] < stack->stack_b[tmp_b]) && (tmp_a < stack->size_a || tmp_b < stack->size_b))
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[tmp_a + 1] == biggest_num(stack->stack_a, stack->size_a))
+			return (i);
+		tmp_a++;
+		tmp_b++;
+		i++;
+	}
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]) && (tmp_b >= stack->size_b || tmp_a >= stack->size_a))
+		return (9999);
+	return (i);
+}
+
+void	push_ra(t_stack *stack)
+{
+	int		tmp_a;
+	int		tmp_b;
+
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		{
+			apply_pa(stack);
+			return ;
+		}
+		apply_ra(stack);
+	}
+	apply_pa(stack);
+}
+
+void	push_rb(t_stack *stack)
+{
+	int		tmp_a;
+	int		tmp_b;
+	int		i;
+
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	i = stack->size_b;
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		{
+			apply_pa(stack);
+			return ;
+		}
+		apply_rb(stack);
+	}
+	apply_pa(stack);
+}
+
+void	push_rr(t_stack *stack)
+{
+	int		tmp_a;
+	int		tmp_b;
+
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		{
+			apply_pa(stack);
+			return ;
+		}
+		apply_rr(stack);
+	}
+	apply_pa(stack);
+}
+
+void	push_rra(t_stack *stack)
+{
+	int		tmp_a;
+	int		tmp_b;
+
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		{
+			apply_pa(stack);
+			return ;
+		}
+		apply_rra(stack);
+	}
+	apply_pa(stack);
+}
+
+void	push_rrb(t_stack *stack)
+{
+	int		tmp_a;
+	int		tmp_b;
+	int		i;
+
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		{
+			apply_pa(stack);
+			return ;
+		}
+		apply_rrb(stack);
+	}
+	apply_pa(stack);
+}
+
+void	push_rrr(t_stack *stack)
+{
+	int		tmp_a;
+	int		tmp_b;
+
+	tmp_a = stack->size_a - 1;
+	tmp_b = stack->size_b - 1;
+	while (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	{
+		if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+		{
+			apply_pa(stack);
+			return ;
+		}
+		apply_rrr(stack);
+	}
+	apply_pa(stack);
+}
+
+
+int		best_opt(int *opts)
+{
+	int		i;
+
+	i = smallest_ind(opts, 6);
+	return (i);
+}
+
+void	push(t_stack *stack, int *opts, int best)
+{
+	if (opts[best] == 0)
+		apply_pa(stack);
+	else if (best == 0)
+		push_ra(stack);
+	else if (best == 1)
+		push_rb(stack);
+	else if (best == 2)
+		push_rr(stack);
+	else if (best == 3)
+		push_rra(stack);
+	else if (best == 4)
+		push_rrb(stack);
+	else if (best == 5)
+		push_rrr(stack);
+}
+
+void	opt_direction(t_stack *stack)
+{
+	int		*opts;
+	int		best;
+
+	opts = (int *)malloc(sizeof(int) * 6);
+	opts[0] = check_ra(stack);
+	opts[1] = check_rb(stack);
+	opts[2] = check_rr(stack);
+	opts[3] = check_rra(stack);
+	opts[4] = check_rrb(stack);
+	opts[5] = check_rrr(stack);
+//	print_arr(stack->stack_a, stack->size_a);
+//	printf("------------------\n");
+//	print_arr(stack->stack_b, stack->size_b);
+//	printf("------------------\n");
+//	printf("------------------\n");
+//	printf("\033[1;31m");
+//	print_arr(opts, 6);
+//	printf("\033[0m;\n");
+	best = best_opt(opts);
+//	printf("\033[1;32m");
+//	printf("%d\n", best);
+//	printf("\033[0m;");
+	push(stack, opts, best);
+}
+
+void	align_stack(t_stack *stack)
+{
+	if (smallest_ind(stack->stack_a, stack->size_a) > (stack->size_a / 2))
+		while (stack->stack_a[0] != biggest_num(stack->stack_a, stack->size_a))
+			apply_ra(stack);
+	else
+		while (stack->stack_a[0] != biggest_num(stack->stack_a, stack->size_a))
+			apply_rra(stack);
+}
+
+void	sort2(t_stack *stack)
 {
 	int		middle;
-	int		tmp;
 	int		big;
 	int		small;
-	int		j;
-
+	
+	if (stack->size_a == 3)
+	{
+		if (stack->stack_a[2] > stack->stack_a[1])
+			apply_sa(stack);
+		if (stack->stack_a[1] > stack->stack_a[0])
+		{
+			apply_rra(stack);
+			apply_sa(stack);
+		}
+		if (stack->stack_a[2] > stack->stack_a[1])
+			apply_sa(stack);
+		return ;
+	}
 	big = biggest_num(stack->stack_a, stack->size_a);
 	small = smallest_num(stack->stack_a, stack->size_a);
 	middle = (small + big) / 2;
-	tmp = stack->size_a - 1;
-	j = 0;
 	if (stack->stack_a[stack->size_a - 1] < middle)
-	{
 		apply_pb(stack);
-		j++;
-	}
 	else
 		apply_ra(stack);
-	if (stack->stack_a[0] != big || stack->size_a > 2)
+	sort2(stack);
+}
+
+
+void	sort(t_stack *stack)
+{
+	int		tmp;
+	int		middle;
+
+	/*tmp = stack->stack_a[stack->size_a - 1];
+	apply_ra(stack);
+	while (stack->stack_a[stack->size_a - 1] != tmp)
 	{
-		/*printf("A:\n");
-		print_arr(stack->stack_a, stack->size_a);
-		printf("------------------\n");
-		printf("B:\n");
-		print_arr(stack->stack_b, stack->size_b);
-		printf("------------------\n");*/
-		big = biggest_num(stack->stack_b, stack->size_b);
-		if (stack->size_b == 2 && stack->stack_b[stack->size_b - 1] < stack->stack_b[0])
-			apply_sb(stack);
-		if (stack->size_b == 3)
-		{
-			if (stack->stack_b[stack->size_b - 1] < stack->stack_b[stack->size_b - 2])
-				apply_sb(stack);
-			if (stack->stack_b[stack->size_b - 2] < stack->stack_b[0])
-			{
-				apply_rrb(stack);
-				apply_sb(stack);
-			}
-			if (stack->stack_b[stack->size_b - 1] < stack->stack_b[stack->size_b - 2])
-				apply_sb(stack);
-		}
-		if (stack->stack_b[stack->size_b - 1] < stack->stack_b[0] && stack->size_b > 3)
-			apply_rb(stack);
-		else if (stack->stack_b[stack->size_b - 1] < stack->stack_b[stack->size_b - 2] && stack->size_b > 3)
-		{
-			while (stack->stack_b[stack->size_b - 1] < stack->stack_b[stack->size_b - 2])
-			{
-				apply_sb(stack);
-				apply_rb(stack);
-			}
-		}
-		else if (stack->stack_b[stack->size_b - 1] > stack->stack_b[0] && stack->stack_b[stack->size_b - 1] != big && stack->size_b > 3)
-		{
-			while (stack->stack_b[stack->size_b - 1] > stack->stack_b[0] && stack->stack_b[stack->size_b - 1] != big)
-			{
-				apply_rrb(stack);
-				apply_sb(stack);
-			}
-		}
-		while (stack->stack_b[stack->size_b - 1] != big && stack->size_b > 3)
-			apply_rrb(stack);
-		sort(stack);
-	}
-	apply_pa(stack);
-	/*while (j--)
-	{
-		while (stack->stack_b[stack->size_b - 1] != big)
-		{
-			apply_rb(stack);
-			i++;
-		}
-		if (stack->stack_b[stack->size_b - 1] == big)
-			apply_pa(stack);
-		while (i--)
-			apply_rrb(stack);
+		if (stack->stack_a[0] < stack->stack_a[stack->size_a - 1])
+			apply_ra(stack);
+		else
+			apply_pb(stack);
 	}*/
+	sort2(stack);
+	if (stack->size_a == 3 && !stack->size_b)
+		return ;
+	while (stack->size_b != 1)
+		opt_direction(stack);
+	if (check_ra(stack) > check_rra(stack))
+		push_rra(stack);
+	else
+		push_ra(stack);
+	align_stack(stack);
 }
 
 int		main(int argc, char **argv)
@@ -402,8 +750,7 @@ int		main(int argc, char **argv)
 	else
 		fill_stack(argv + 1, stack->size_a - 1, stack);
 	sort(stack);
-	print_arr(stack->stack_a, stack->size_a);
-	//printf("------------------\n");
-	//print_arr(stack->stack_b, stack->size_b);
-	//print_res(stack);*/
+	/*print_arr(stack->stack_a, stack->size_a);
+	printf("------------------\n");
+	print_arr(stack->stack_b, stack->size_b);*/
 }
