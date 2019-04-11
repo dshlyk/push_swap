@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:05:01 by sbruen            #+#    #+#             */
-/*   Updated: 2019/04/11 17:46:36 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/04/11 19:52:52 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -779,6 +779,7 @@ void	sort3(t_stack *stack)
 
 
 	i = 0;
+
 	while (stack->size_b > 3)
 	{
 		big = biggest_num(stack->stack_b, stack->size_b);
@@ -805,18 +806,35 @@ void	sort3(t_stack *stack)
 		apply_pb(stack);
 }
 
+int		is_sorted(t_stack *stack)
+{
+	int		i;
+	
+	i = stack->size_a - 1;
+	while (i > 0)
+	{
+		if (stack->stack_a[i] < stack->stack_a[i - 1])
+			i--;
+		else
+			return (0);
+	}
+	return (1);
+}
+
 void	sort(t_stack *stack)
 {	
 	int		middle;
 	int		i;
 
+	if (is_sorted(stack) && stack->size_b == 0)
+		return ;
 	sort2(stack);
 	if (stack->size_a == 3 && !stack->size_b)
 		return ;
 	middle = stack->size_b / 2;
 	while (stack->size_b != 1)
 	{
-		if (stack->size_b < middle && stack->size_b > 10)
+		if (stack->size_b < middle && stack->size_b > 20)
 		{
 			middle = stack->size_b / 2;
 			sort3(stack);
