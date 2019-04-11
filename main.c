@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:05:01 by sbruen            #+#    #+#             */
-/*   Updated: 2019/04/10 19:39:20 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/04/11 17:46:36 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -681,7 +681,7 @@ void	align_stack(t_stack *stack)
 			apply_rra(stack);
 }
 
-void	sort2(t_stack *stack)
+/*void	sort2(t_stack *stack)
 {
 	int		middle;
 	int		big;
@@ -689,15 +689,12 @@ void	sort2(t_stack *stack)
 	
 	if (stack->size_a == 3)
 	{
-		if (stack->stack_a[2] > stack->stack_a[1])
-			apply_sa(stack);
-		if (stack->stack_a[1] > stack->stack_a[0])
-		{
+		if (stack->stack_a[2] == biggest_num(stack->stack_a, stack->size_a))
+			apply_ra(stack);
+		if (stack->stack_a[1] == biggest_num(stack->stack_a, stack->size_a))
 			apply_rra(stack);
-			apply_sa(stack);
-		}
 		if (stack->stack_a[2] > stack->stack_a[1])
-			apply_sa(stack);
+			apply_sa(stack);	
 		return ;
 	}
 	big = biggest_num(stack->stack_a, stack->size_a);
@@ -708,28 +705,129 @@ void	sort2(t_stack *stack)
 	else
 		apply_ra(stack);
 	sort2(stack);
+}NORM*/
+
+void	sort2(t_stack *stack)
+{
+	int		middle;
+	int		big;
+	int		small;
+	
+	while (stack->size_a > 3)
+	{
+		big = biggest_num(stack->stack_a, stack->size_a);
+		small = smallest_num(stack->stack_a, stack->size_a);
+		middle = (small + big) / 2;
+		if (stack->stack_a[stack->size_a - 1] < middle)
+			apply_pb(stack);
+		else
+			apply_ra(stack);
+	}
+	if (stack->size_a == 3)
+	{
+		if (stack->stack_a[2] == biggest_num(stack->stack_a, stack->size_a))
+			apply_ra(stack);
+		if (stack->stack_a[1] == biggest_num(stack->stack_a, stack->size_a))
+			apply_rra(stack);
+		if (stack->stack_a[2] > stack->stack_a[1])
+			apply_sa(stack);	
+	}
 }
 
+/*void	sort3(t_stack *stack)
+{
+	int		middle;
+	int		big;
+	int		small;
+	int		i;
+
+
+	i = 0;
+	big = biggest_num(stack->stack_b, stack->size_b);
+	small = smallest_num(stack->stack_b, stack->size_b);
+	middle = (small + big) / 2;
+	while (biggest_num(stack->stack_b, stack->size_b) > middle)
+	{
+
+		if (stack->stack_b[stack->size_b - 1] > middle)
+		{
+			apply_pa(stack);
+			i++;
+		}
+		else
+			apply_rb(stack);
+	}
+	if (stack->size_b == 3)
+	{
+		if (stack->stack_b[2] == biggest_num(stack->stack_b, stack->size_b))
+			apply_rb(stack);
+		if (stack->stack_b[1] == biggest_num(stack->stack_b, stack->size_b))
+			apply_rrb(stack);
+		if (stack->stack_b[2] > stack->stack_b[1])
+			apply_sb(stack);
+	}
+	while (i-- >= 0)
+		apply_pb(stack);
+}*/
+
+void	sort3(t_stack *stack)
+{
+	int		middle;
+	int		big;
+	int		small;
+	int		i;
+
+
+	i = 0;
+	while (stack->size_b > 3)
+	{
+		big = biggest_num(stack->stack_b, stack->size_b);
+		small = smallest_num(stack->stack_b, stack->size_b);
+		middle = (small + big) / 2;
+		if (stack->stack_b[stack->size_b - 1] > middle)
+		{
+			apply_pa(stack);
+			i++;
+		}
+		else
+			apply_rb(stack);
+	}
+	if (stack->size_b == 3)
+	{
+		if (stack->stack_b[2] == biggest_num(stack->stack_b, stack->size_b))
+			apply_rb(stack);
+		if (stack->stack_b[1] == biggest_num(stack->stack_b, stack->size_b))
+			apply_rrb(stack);
+		if (stack->stack_b[2] > stack->stack_b[1])
+			apply_sb(stack);
+	}
+	while (i-- >= 0)
+		apply_pb(stack);
+}
 
 void	sort(t_stack *stack)
-{
-	int		tmp;
+{	
 	int		middle;
+	int		i;
 
-	/*tmp = stack->stack_a[stack->size_a - 1];
-	apply_ra(stack);
-	while (stack->stack_a[stack->size_a - 1] != tmp)
-	{
-		if (stack->stack_a[0] < stack->stack_a[stack->size_a - 1])
-			apply_ra(stack);
-		else
-			apply_pb(stack);
-	}*/
 	sort2(stack);
 	if (stack->size_a == 3 && !stack->size_b)
 		return ;
+	middle = stack->size_b / 2;
 	while (stack->size_b != 1)
+	{
+		if (stack->size_b < middle && stack->size_b > 10)
+		{
+			middle = stack->size_b / 2;
+			sort3(stack);
+		}
 		opt_direction(stack);
+		/*print_arr(stack->stack_a, stack->size_a);
+		printf("------------------\n");
+		print_arr(stack->stack_b, stack->size_b);
+		printf("------------------\n");
+		printf("------------------\n");*/
+	}
 	if (check_ra(stack) > check_rra(stack))
 		push_rra(stack);
 	else
