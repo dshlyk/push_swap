@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:05:01 by sbruen            #+#    #+#             */
-/*   Updated: 2019/04/23 19:03:42 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/04/25 15:56:35 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,40 +17,40 @@ void	init_stack(t_stack *stack, int argc, char *argv)
 {
 	if (argc > 2)
 	{
-		stack->stack_a = (int *)ft_memalloc(4 * (argc - 1));
-		stack->size_a = argc - 1;
-		stack->stack_b = (int *)ft_memalloc(4 * (argc - 1));
+		stack->st_a = (int *)ft_memalloc(4 * (argc - 1));
+		stack->sz_a = argc - 1;
+		stack->st_b = (int *)ft_memalloc(4 * (argc - 1));
 	}
 	else
 	{
-		stack->size_a = ft_words_num(argv, ' ');
-		stack->stack_a = (int *)ft_memalloc(4 * stack->size_a);
-		stack->stack_b = (int *)ft_memalloc(4 * stack->size_a);
+		stack->sz_a = ft_words_num(argv, ' ');
+		stack->st_a = (int *)ft_memalloc(4 * stack->sz_a);
+		stack->st_b = (int *)ft_memalloc(4 * stack->sz_a);
 	}
-	stack->size_b = 0;
+	stack->sz_b = 0;
 }
 
 void	apply_sa(t_stack *stack)
 {
 	int		tmp;
 
-	if (stack->size_a < 2)
+	if (stack->sz_a < 2)
 		return ;
-	tmp = stack->stack_a[stack->size_a - 1];
-	stack->stack_a[stack->size_a - 1] = stack->stack_a[stack->size_a - 2];
-	stack->stack_a[stack->size_a - 2] = tmp;
-	//printf("sa\n");
+	tmp = stack->st_a[stack->sz_a - 1];
+	stack->st_a[stack->sz_a - 1] = stack->st_a[stack->sz_a - 2];
+	stack->st_a[stack->sz_a - 2] = tmp;
+	printf("sa\n");
 }
 
 void	apply_sb(t_stack *stack)
 {
 	int		tmp;
 
-	if (stack->size_b < 2)
+	if (stack->sz_b < 2)
 		return ;
-	tmp = stack->stack_b[stack->size_b - 1];
-	stack->stack_b[stack->size_b - 1] = stack->stack_b[stack->size_b - 2];
-	stack->stack_b[stack->size_b - 2] = tmp;
+	tmp = stack->st_b[stack->sz_b - 1];
+	stack->st_b[stack->sz_b - 1] = stack->st_b[stack->sz_b - 2];
+	stack->st_b[stack->sz_b - 2] = tmp;
 	printf("sb\n");
 }
 
@@ -62,21 +62,21 @@ void	apply_ss(t_stack *stack)
 
 void	apply_pa(t_stack *stack)
 {
-	if (!stack->size_b)
+	if (!stack->sz_b)
 		return ;
-	stack->stack_a[stack->size_a] = stack->stack_b[stack->size_b - 1];
-	stack->size_a++;
-	stack->size_b--;
+	stack->st_a[stack->sz_a] = stack->st_b[stack->sz_b - 1];
+	stack->sz_a++;
+	stack->sz_b--;
 	printf("pa\n");
 }
 
 void	apply_pb(t_stack *stack)
 {
-	if (!stack->size_a)
+	if (!stack->sz_a)
 		return ;
-	stack->stack_b[stack->size_b] = stack->stack_a[stack->size_a - 1];
-	stack->size_a--;
-	stack->size_b++;
+	stack->st_b[stack->sz_b] = stack->st_a[stack->sz_a - 1];
+	stack->sz_a--;
+	stack->sz_b++;
 	printf("pb\n");
 }
 
@@ -85,14 +85,14 @@ void	apply_ra(t_stack *stack)
 	int		i;
 	int		tmp;
 
-	i = stack->size_a - 1;
-	tmp = stack->stack_a[stack->size_a - 1];
+	i = stack->sz_a - 1;
+	tmp = stack->st_a[stack->sz_a - 1];
 	while (i > 0)
 	{
-		stack->stack_a[i] = stack->stack_a[i - 1];
+		stack->st_a[i] = stack->st_a[i - 1];
 		i--;
 	}
-	stack->stack_a[i] = tmp;
+	stack->st_a[i] = tmp;
 	printf("ra\n");
 }
 
@@ -101,14 +101,14 @@ void	apply_rb(t_stack *stack)
 	int		i;
 	int		tmp;
 
-	i = stack->size_b - 1;
-	tmp = stack->stack_b[stack->size_b - 1];
+	i = stack->sz_b - 1;
+	tmp = stack->st_b[stack->sz_b - 1];
 	while (i > 0)
 	{
-		stack->stack_b[i] = stack->stack_b[i - 1];
+		stack->st_b[i] = stack->st_b[i - 1];
 		i--;
 	}
-	stack->stack_b[i] = tmp;
+	stack->st_b[i] = tmp;
 	printf("rb\n");
 }
 
@@ -117,22 +117,22 @@ void	apply_rr(t_stack *stack)
 	int		i;
 	int		tmp;
 
-	i = stack->size_a - 1;
-	tmp = stack->stack_a[stack->size_a - 1];
+	i = stack->sz_a - 1;
+	tmp = stack->st_a[stack->sz_a - 1];
 	while (i > 0)
 	{
-		stack->stack_a[i] = stack->stack_a[i - 1];
+		stack->st_a[i] = stack->st_a[i - 1];
 		i--;
 	}
-	stack->stack_a[i] = tmp;
-	i = stack->size_b - 1;
-	tmp = stack->stack_b[stack->size_b - 1];
+	stack->st_a[i] = tmp;
+	i = stack->sz_b - 1;
+	tmp = stack->st_b[stack->sz_b - 1];
 	while (i > 0)
 	{
-		stack->stack_b[i] = stack->stack_b[i - 1];
+		stack->st_b[i] = stack->st_b[i - 1];
 		i--;
 	}
-	stack->stack_b[i] = tmp;
+	stack->st_b[i] = tmp;
 	printf("rr\n");
 }
 
@@ -142,14 +142,14 @@ void	apply_rra(t_stack *stack)
 	int		tmp;
 
 	i = 0;
-	tmp = stack->stack_a[i];
-	while (i < stack->size_a - 1)
+	tmp = stack->st_a[i];
+	while (i < stack->sz_a - 1)
 	{
-		stack->stack_a[i] = stack->stack_a[i + 1];
+		stack->st_a[i] = stack->st_a[i + 1];
 		i++;
 	}
-	stack->stack_a[i] = tmp;
-	//printf("rra\n");
+	stack->st_a[i] = tmp;
+	printf("rra\n");
 }
 
 void	apply_rrb(t_stack *stack)
@@ -158,13 +158,13 @@ void	apply_rrb(t_stack *stack)
 	int		tmp;
 
 	i = 0;
-	tmp = stack->stack_b[i];
-	while (i < stack->size_b - 1)
+	tmp = stack->st_b[i];
+	while (i < stack->sz_b - 1)
 	{
-		stack->stack_b[i] = stack->stack_b[i + 1];
+		stack->st_b[i] = stack->st_b[i + 1];
 		i++;
 	}
-	stack->stack_b[i] = tmp;
+	stack->st_b[i] = tmp;
 	printf("rrb\n");
 }
 
@@ -174,7 +174,7 @@ void	apply_rrr(t_stack *stack)
 	int		tmp;
 
 	i = 0;
-	tmp = stack->stack_a[i];
+	tmp = stack->st_a[i];
 	while (i < stack->size_a - 1)
 	{
 		stack->stack_a[i] = stack->stack_a[i + 1];
@@ -337,9 +337,7 @@ int		check_ra(t_stack *stack)
 	i = 0;
 	tmp_a = stack->size_a - 1;
 	tmp_b = stack->size_b - 1;
-	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
-		return (0);
-	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
 	{
 		tmp_a--;
 		i++;
@@ -365,9 +363,7 @@ int		check_rb(t_stack *stack)
 	i = 0;
 	tmp_a = stack->size_a - 1;
 	tmp_b = stack->size_b - 1;
-	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
-		return (0);
-	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
 	{
 		tmp_b--;
 		i++;
@@ -393,9 +389,7 @@ int		check_rr(t_stack *stack)
 	i = 0;
 	tmp_a = stack->size_a - 1;
 	tmp_b = stack->size_b - 1;
-	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
-		return (0);
-	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
 	{
 		tmp_a--;
 		tmp_b--;
@@ -423,9 +417,7 @@ int		check_rra(t_stack *stack)
 	i = 0;
 	tmp_a = stack->size_a - 1;
 	tmp_b = stack->size_b - 1;
-	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
-		return (0);
-	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
 	{
 		tmp_a = 0;
 		i++;
@@ -451,9 +443,7 @@ int		check_rrb(t_stack *stack)
 	i = 0;
 	tmp_a = stack->size_a - 1;
 	tmp_b = stack->size_b - 1;
-	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
-		return (0);
-	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
 	{
 		tmp_b = 0;
 		i++;
@@ -479,9 +469,7 @@ int		check_rrr(t_stack *stack)
 	i = 0;
 	tmp_a = stack->size_a - 1;
 	tmp_b = stack->size_b - 1;
-	if (stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
-		return (0);
-	else if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
+	if (!(stack->stack_a[tmp_a] > stack->stack_b[tmp_b] && stack->stack_a[0] < stack->stack_b[tmp_b]))
 	{
 		tmp_a = 0;
 		tmp_b = 0;
@@ -645,6 +633,12 @@ void	opt_direction(t_stack *stack)
 	int		*opts;
 	int		best;
 
+	if (stack->stack_a[stack->size_a - 1] > stack->stack_b[stack->size_b - 1] &&
+			stack->stack_a[0] == biggest_num(stack->stack_a, stack->size_a))
+	{
+		apply_pa(stack);
+		return ;
+	}
 	opts = (int *)malloc(sizeof(int) * 6);
 	opts[0] = check_ra(stack);
 	opts[1] = check_rb(stack);

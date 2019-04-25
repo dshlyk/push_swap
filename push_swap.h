@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:33:43 by sbruen            #+#    #+#             */
-/*   Updated: 2019/04/23 18:58:41 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/04/25 15:36:36 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 
 typedef struct	s_stack
 {
-	int			*stack_a;
-	int			*stack_b;
-	int			size_a;
-	int			size_b;
+	int			*st_a;
+	int			*st_b;
+	int			sz_a;
+	int			sz_b;
 }				t_stack;
 
 int				get_next_line(const int fd, char **line);
