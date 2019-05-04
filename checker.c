@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 12:50:22 by sbruen            #+#    #+#             */
-/*   Updated: 2019/04/23 18:54:50 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/04 08:39:16 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,13 @@ int		main(int argc, char **argv)
 {
 	t_stack	*stack;
 
+	(argc == 1) ? exit(0) : 0;
 	stack = (t_stack*)malloc(sizeof(t_stack));
 	init_stack(stack, argc, argv[1]);
 	if (argc == 2)
 		split_input(argv, stack);
 	else
-		fill_stack(argv + 1, stack->size_a - 1, stack);
+		fill_stack(argv + 1, stack->sz_a - 1, stack);
 	if (!(is_sorted_a(stack)))
 		check(stack);
 	if (is_sorted_a(stack))

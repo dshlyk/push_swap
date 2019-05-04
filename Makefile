@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: sbruen <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/04/23 17:56:40 by sbruen            #+#    #+#              #
-#    Updated: 2019/04/23 18:59:37 by sbruen           ###   ########.fr        #
+#    Created: 2018/11/27 20:15:35 by sbruen            #+#    #+#              #
+#    Updated: 2019/05/04 09:50:25 by sbruen           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,9 +15,13 @@ NAME2	= checker
 
 CFLAGS 	= -Wall -Wextra -Werror -g
 
-SRC1 	= push_swap.c p_s.c
+SRC1 	= push_swap.c additional_funcs.c check_fill_args.c checkers.c \
+		  get_next_line.c helpers.c helpers2.c instr.c instr2.c pushers.c \
+		  printer.c sort.c 
 
-SRC2 	= checker.c p_s.c get_next_line.c
+SRC2 	= checker.c additional_funcs.c check_fill_args.c checkers.c \
+		  get_next_line.c helpers.c helpers2.c instr.c instr2.c pushers.c \
+		  printer.c sort.c 
 
 .PHONY: all clean fclean re
 
@@ -30,8 +34,8 @@ OBJSFD 	= objects
 OBJS1 	= $(addprefix $(OBJSFD)/,$(SRC1:.c=.o))
 OBJS2 	= $(addprefix $(OBJSFD)/,$(SRC2:.c=.o))
 
-HDR 		= -I./includes
-LIBFT_HDR 	= -I./libft
+HDR 		= -I.
+LIBFT_HDR 	= -I./libft/includes
 LIB_BINARY	= -L./libft -lft
 LIBFT		= libft/libft.a
 

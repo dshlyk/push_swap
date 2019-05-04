@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:33:43 by sbruen            #+#    #+#             */
-/*   Updated: 2019/04/25 15:36:36 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/04 09:47:25 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,12 @@
 # include <string.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include "libft/libft.h"
+#include <wchar.h>
+#include <locale.h>
+# include "libft/includes/libft.h"
 # define BUFF_SIZE 1
+# define GREEN "\033[0;32m"
+# define RED "\033[0;31m"
 
 typedef struct	s_stack
 {
@@ -25,10 +29,14 @@ typedef struct	s_stack
 	int			*st_b;
 	int			sz_a;
 	int			sz_b;
+	int			v;
+	int			c;
+	int			size;
 }				t_stack;
 
-int				get_next_line(const int fd, char **line);
-void			init_stack(t_stack *stack, int argc, char *argv);
+
+void			align_stack(t_stack *stack);
+int				apply_inst(t_stack *stack, char *str);
 void			apply_sa(t_stack *stack);
 void			apply_sb(t_stack *stack);
 void			apply_ss(t_stack *stack);
@@ -40,35 +48,41 @@ void			apply_rr(t_stack *stack);
 void			apply_rra(t_stack *stack);
 void			apply_rrb(t_stack *stack);
 void			apply_rrr(t_stack *stack);
-void			check_input(char **str);
+int				best_opt(int *opts);
+int				big(int *stack, int size);
+void			check(t_stack *stack);
 void			check_doubles(t_stack *stack);
-void			fill_stack(char **str, int size, t_stack *stack);
-void			split_input(char **argv, t_stack *stack);
-int				biggest_num(int *stack, int size);
-int				smallest_num(int *stack, int size);
-int				smallest_ind(int *stack, int size);
-void			print_arr(int *arr, int size);
+void			check_input(char **str);
 int				check_ra(t_stack *stack);
 int				check_rb(t_stack *stack);
 int				check_rr(t_stack *stack);
 int				check_rra(t_stack *stack);
 int				check_rrb(t_stack *stack);
 int				check_rrr(t_stack *stack);
+void			color(t_stack *stack);
+void			fill_stack(char **str, int size, t_stack *stack);
+void			free_stack(t_stack *stack);
+int				ft_line_fill(char **save, char **line, int fd);
+int				get_next_line(const int fd, char **line);
+void			init_stack(t_stack *stack, int argc, char *argv);
+int				is_sorted_a(t_stack *stack);
+void			opt_direction(t_stack *stack);
+void			print_stacks(t_stack *stack);
 void			push_ra(t_stack *stack);
 void			push_rb(t_stack *stack);
 void			push_rr(t_stack *stack);
 void			push_rra(t_stack *stack);
 void			push_rrb(t_stack *stack);
 void			push_rrr(t_stack *stack);
-int				best_opt(int *opts);
 void			push(t_stack *stack, int *opts, int best);
-void			opt_direction(t_stack *stack);
-void			align_stack(t_stack *stack);
-int				is_sorted_a(t_stack *stack);
+void			set_flags(t_stack *stack, char *av);
+int				smallest_num(int *stack, int size);
+int				smallest_ind(int *stack, int size);
+void			sort(t_stack *stack);
 void			sort_3(t_stack *stack);
+void			sort_rev_3(t_stack *stack);
 void			sort2(t_stack *stack);
 void			sort3(t_stack *stack);
-void			sort(t_stack *stack);
-void			free_stack(t_stack *stack);
+void			split_input(char **argv, t_stack *stack);
 
 #endif
