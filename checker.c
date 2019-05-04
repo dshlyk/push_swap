@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 12:50:22 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 08:39:16 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/04 11:26:52 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int		main(int argc, char **argv)
 	(argc == 1) ? exit(0) : 0;
 	stack = (t_stack*)malloc(sizeof(t_stack));
 	init_stack(stack, argc, argv[1]);
+	stack->checker = 1;
 	if (argc == 2)
 		split_input(argv, stack);
 	else

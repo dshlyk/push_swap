@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 09:32:23 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 09:33:16 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/04 11:48:41 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,8 @@ void	apply_ra(t_stack *stack)
 		i--;
 	}
 	stack->st_a[i] = tmp;
-	printf("ra\n");
-	if (stack->v)
-		print_stacks(stack);
+	stack->checker ? 0 : ft_putendl("ra");
+	stack->v ? print_stacks(stack) : 0;
 }
 
 void	apply_rb(t_stack *stack)
@@ -43,9 +42,8 @@ void	apply_rb(t_stack *stack)
 		i--;
 	}
 	stack->st_b[i] = tmp;
-	printf("rb\n");
-	if (stack->v)
-		print_stacks(stack);
+	stack->checker ? 0 : ft_putendl("rb");
+	stack->v ? print_stacks(stack) : 0;
 }
 
 void	apply_rr(t_stack *stack)
@@ -69,9 +67,8 @@ void	apply_rr(t_stack *stack)
 		i--;
 	}
 	stack->st_b[i] = tmp;
-	printf("rr\n");
-	if (stack->v)
-		print_stacks(stack);
+	stack->checker ? 0 : ft_putendl("rr");
+	stack->v ? print_stacks(stack) : 0;
 }
 
 void	apply_rra(t_stack *stack)
@@ -87,9 +84,8 @@ void	apply_rra(t_stack *stack)
 		i++;
 	}
 	stack->st_a[i] = tmp;
-	printf("rra\n");
-	if (stack->v)
-		print_stacks(stack);
+	stack->checker ? 0 : ft_putendl("rra");
+	stack->v ? print_stacks(stack) : 0;
 }
 
 void	apply_rrb(t_stack *stack)
@@ -105,7 +101,6 @@ void	apply_rrb(t_stack *stack)
 		i++;
 	}
 	stack->st_b[i] = tmp;
-	printf("rrb\n");
-	if (stack->v)
-		print_stacks(stack);
+	stack->checker ? 0 : ft_putendl("rrb");
+	stack->v ? print_stacks(stack) : 0;
 }

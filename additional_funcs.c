@@ -33,9 +33,8 @@ void	apply_rrr(t_stack *stack)
 		i++;
 	}
 	stack->st_b[i] = tmp;
-	printf("rrr\n");
-	if (stack->v)
-		print_stacks(stack);
+	stack->checker ? 0 : ft_putendl("rrr");
+	stack->v ? print_stacks(stack) : 0;
 }
 
 int		check_rrr(t_stack *s)

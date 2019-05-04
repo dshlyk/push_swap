@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 09:50:44 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 10:09:25 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/04 12:04:39 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,64 @@ void	color(t_stack *stack)
 	}
 }
 
+void	print_a(t_stack *stack, int a, int b, int c)
+{
+	int		tmp;
+
+	tmp = stack->st_a[a];
+	while (tmp--)
+		printf("%lc", c);
+	if (b >= 0)
+	{
+		printf("%*c", (stack->size + 1 - stack->st_a[a]), ' ');
+		tmp = stack->st_b[b];
+		while (tmp--)
+			printf("%lc", c);
+	}
+}
+
+void	print_b(t_stack *stack, int a, int b, int c)
+{
+	int		tmp;
+
+	if (a >= 0)
+	{
+		tmp = stack->st_a[a];
+		while (tmp--)
+			printf("%lc", c);
+		printf("%*c", (stack->size + 1 - stack->st_a[a]), ' ');
+	}
+	else
+		printf("%*c", stack->size + 1, ' ');
+	tmp = stack->st_b[b];
+	while (tmp--)
+		printf("%lc", c);
+}
+
+void	print_ab(t_stack *stack, int a, int b, int c)
+{
+	int		tmp;
+
+	tmp = stack->st_a[a];
+	while (tmp--)
+		printf("%lc", c);
+	printf("%*c", (stack->size + 1 - stack->st_a[a]), ' ');
+	tmp = stack->st_b[b];
+	while (tmp--)
+		printf("%lc", c);
+}
+
 void	print_stacks(t_stack *stack)
 {
 	int		a;
 	int		b;
-	int		tmp;
-	int		tmp1;
 	char	*l;
+	wchar_t c;
 
+	c = 0x2593;
 	a = stack->sz_a;
 	b = stack->sz_b;
-	setlocale(LC_ALL, "");
+	setlocale(LC_CTYPE, "UTF-8");
 	color(stack);
 	printf("%*s %*s\n", (stack->size / 2), "STACK A", stack->size, "STACK B");
 	while ((a > b) ? (a > 0) : (b > 0))
@@ -41,64 +88,13 @@ void	print_stacks(t_stack *stack)
 		a--;
 		b--;
 		if (a > b)
-		{
-			tmp = stack->st_a[a];
-			while (tmp--)
-				printf("%lc", (wint_t)9619);
-			if (b >= 0)
-			{
-				printf("%*c", (stack->size + 1 - stack->st_a[a]), ' ');
-				tmp1 = stack->st_b[b];
-				while (tmp1--)
-					printf("%lc", (wint_t)9619);
-			}
-		}
+			print_a(stack, a, b, c);
 		else if (b > a)
-		{
-			if (a >= 0)
-			{
-				tmp = stack->st_a[a];
-				while (tmp--)
-					printf("%lc", (wint_t)9619);
-				printf("%*c", (stack->size + 1 - stack->st_a[a]), ' ');
-			}
-			else
-				printf("%*c", stack->size + 1, ' ');
-			tmp1 = stack->st_b[b];
-			while (tmp1--)
-				printf("%lc", (wint_t)9619);
-		}
+			print_b(stack, a, b, c);
 		else
-		{
-			tmp = stack->st_a[a];
-			while (tmp--)
-				printf("%lc", (wint_t)9619);
-			printf("%*c", (stack->size + 1 - stack->st_a[a]), ' ');
-			tmp1 = stack->st_b[b];
-			while (tmp1--)
-				printf("%lc", (wint_t)9619);
-		}
+			print_ab(stack, a, b, c);
 		printf("\n");
 	}
-	printf("\n");
 	get_next_line(0, &l);
 	free(l);
-}
-
-void	set_flags(t_stack *stack, char *av)
-{
-	if (ft_strequ(av, "-c"))
-	{
-		stack->c = 1;
-		stack->v = 1;
-	}
-	else if (ft_strequ(av, "-v"))
-		stack->v = 1;
-	else
-	{
-		ft_putstr("push_swap: invalid option -- ");
-		ft_putendl(av + 1);
-		ft_putendl("usage: ./push_swap [-v -c] [numbers ...]");
-		exit(1);
-	}
 }

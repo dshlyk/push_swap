@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:05:01 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 09:33:27 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/04 12:02:51 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	init_stack(t_stack *stack, int argc, char *argv)
 		stack->st_a = (int *)ft_memalloc(4 * stack->sz_a);
 		stack->st_b = (int *)ft_memalloc(4 * stack->sz_a);
 	}
+	stack->checker = 0;
 	stack->sz_b = 0;
 	stack->v = 0;
 	stack->c = 0;
@@ -49,7 +50,8 @@ void	sort2(t_stack *stack)
 	}
 	if (stack->sz_a == 3)
 		sort_3(stack);
-	if (stack->sz_b == 2)
+	if (stack->sz_b == 2 &&
+			(stack->st_b[stack->sz_b - 1] < stack->st_a[stack->sz_a - 1]))
 	{
 		if (stack->st_b[1] < stack->st_b[0])
 			apply_sb(stack);

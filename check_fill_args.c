@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 09:25:51 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 09:26:13 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/04 12:05:50 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	check_input(char **str)
 				j++;
 			else
 			{
-				ft_putstr("error\n");
+				ft_putstr_fd("Error\n", 2);
 				exit(1);
 			}
 		}
@@ -50,7 +50,7 @@ void	check_doubles(t_stack *stack)
 		{
 			if (stack->st_a[i] == stack->st_a[j])
 			{
-				ft_putstr("error\n");
+				ft_putstr_fd("Error\n", 2);
 				exit(1);
 			}
 			else
@@ -80,4 +80,22 @@ void	split_input(char **argv, t_stack *stack)
 	str = ft_strsplit(argv[1], ' ');
 	fill_stack(str, stack->sz_a - 1, stack);
 	ft_strdel(str);
+}
+
+void	set_flags(t_stack *stack, char *av)
+{
+	if (ft_strequ(av, "-c"))
+	{
+		stack->c = 1;
+		stack->v = 1;
+	}
+	else if (ft_strequ(av, "-v"))
+		stack->v = 1;
+	else
+	{
+		ft_putstr("push_swap: invalid option -- ");
+		ft_putendl(av + 1);
+		ft_putendl("usage: ./push_swap [-v -c] [numbers ...]");
+		exit(1);
+	}
 }

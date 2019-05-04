@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:33:43 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 09:47:25 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/04 12:11:24 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 # include <string.h>
 # include <unistd.h>
 # include <stdlib.h>
-#include <wchar.h>
-#include <locale.h>
+# include <wchar.h>
+# include <locale.h>
 # include "libft/includes/libft.h"
 # define BUFF_SIZE 1
 # define GREEN "\033[0;32m"
@@ -31,9 +31,9 @@ typedef struct	s_stack
 	int			sz_b;
 	int			v;
 	int			c;
+	int			checker;
 	int			size;
 }				t_stack;
-
 
 void			align_stack(t_stack *stack);
 int				apply_inst(t_stack *stack, char *str);
@@ -68,6 +68,9 @@ void			init_stack(t_stack *stack, int argc, char *argv);
 int				is_sorted_a(t_stack *stack);
 void			opt_direction(t_stack *stack);
 void			print_stacks(t_stack *stack);
+void			print_a(t_stack *stack, int a, int b, int c);
+void			print_b(t_stack *stack, int a, int b, int c);
+void			print_ab(t_stack *stack, int a, int b, int c);
 void			push_ra(t_stack *stack);
 void			push_rb(t_stack *stack);
 void			push_rr(t_stack *stack);
