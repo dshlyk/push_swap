@@ -6,7 +6,7 @@
 #    By: sbruen <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/27 20:15:35 by sbruen            #+#    #+#              #
-#    Updated: 2019/05/04 12:21:55 by sbruen           ###   ########.fr        #
+#    Updated: 2019/05/04 16:21:32 by sbruen           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,16 +35,16 @@ LIBFT_HDR 	= -I./libft/includes
 LIB_BINARY	= -L./libft -lft
 LIBFT		= libft/libft.a
 
+all: $(LIBFT) $(NAME1) $(NAME2)
+
 $(LIBFT):
 	@make -C libft re
-
-all: $(LIBFT) $(NAME1) $(NAME2)
 
 $(OBJSFD):
 	@mkdir $@
 
 $(OBJSFD)/%.o: %.c | $(OBJSFD)
-	@$(CC) $(CFLAGS) $(HDR) $(LIBFT_HDR) -c $< -o $@
+	@gcc $(CFLAGS) $(HDR) $(LIBFT_HDR) -c $< -o $@
 
 $(NAME1): $(OBJS1) $(LIBFT)
 	@gcc $(CFLAGS) $(OBJS1) $(LIB_BINARY) -o $@ 

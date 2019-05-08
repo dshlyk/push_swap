@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 09:25:51 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 12:05:50 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/04 16:24:26 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,18 @@ void	fill_stack(char **str, int size, t_stack *stack)
 void	split_input(char **argv, t_stack *stack)
 {
 	char	**str;
+	int		i;
 
+	i = ft_words_num(argv[1], ' ');
 	str = ft_strsplit(argv[1], ' ');
 	fill_stack(str, stack->sz_a - 1, stack);
-	ft_strdel(str);
+	while (i >= 0)
+	{
+		free(str[i]);
+		i--;
+	}
+	free(str);
+	str = NULL;
 }
 
 void	set_flags(t_stack *stack, char *av)
