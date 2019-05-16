@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 09:50:44 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 12:04:39 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/16 13:15:25 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,24 +75,24 @@ void	print_stacks(t_stack *stack)
 	int		a;
 	int		b;
 	char	*l;
-	wchar_t c;
 
-	c = 0x2593;
+	stack->sym = 0x2593;
 	a = stack->sz_a;
 	b = stack->sz_b;
 	setlocale(LC_CTYPE, "UTF-8");
 	color(stack);
+	print_space();
 	printf("%*s %*s\n", (stack->size / 2), "STACK A", stack->size, "STACK B");
 	while ((a > b) ? (a > 0) : (b > 0))
 	{
 		a--;
 		b--;
 		if (a > b)
-			print_a(stack, a, b, c);
+			print_a(stack, a, b, stack->sym);
 		else if (b > a)
-			print_b(stack, a, b, c);
+			print_b(stack, a, b, stack->sym);
 		else
-			print_ab(stack, a, b, c);
+			print_ab(stack, a, b, stack->sym);
 		printf("\n");
 	}
 	get_next_line(0, &l);

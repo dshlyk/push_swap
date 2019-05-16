@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 09:26:37 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 09:27:26 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/16 13:14:39 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,4 +99,13 @@ void	push(t_stack *stack, int *opts, int best)
 		push_rrb(stack);
 	else if (best == 5)
 		push_rrr(stack);
+}
+
+void	print_space(void)
+{
+	int		i;
+
+	i = 100;
+	while (i--)
+		printf("\n");
 }

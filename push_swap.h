@@ -6,7 +6,7 @@
 /*   By: sbruen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/24 16:33:43 by sbruen            #+#    #+#             */
-/*   Updated: 2019/05/04 14:56:13 by sbruen           ###   ########.fr       */
+/*   Updated: 2019/05/16 13:17:10 by sbruen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct	s_stack
 	int			c;
 	int			checker;
 	int			size;
+	wchar_t		sym;
 }				t_stack;
 
 void			align_stack(t_stack *stack);
@@ -71,6 +72,7 @@ void			print_stacks(t_stack *stack);
 void			print_a(t_stack *stack, int a, int b, int c);
 void			print_b(t_stack *stack, int a, int b, int c);
 void			print_ab(t_stack *stack, int a, int b, int c);
+void			print_space(void);
 void			push_ra(t_stack *stack);
 void			push_rb(t_stack *stack);
 void			push_rr(t_stack *stack);
